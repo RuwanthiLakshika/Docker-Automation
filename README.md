@@ -6,6 +6,23 @@ Here is a comprehensive image of what we are going to implement.
 
 I am trying to use github actions to automate docker builds when a trigger to main branch happens. And also a correct and sustainable tagging has implemented by both the tag with hash and a latest tag.
 
+## Why Pull the Base Image?
+### 1. Ephemeral Runner Environment
+- Each GitHub Actions run starts in a fresh, clean virtual machine with no Docker images cached.
+- So even if you previously built an image using the same base, it won’t persist across workflows.
+- That’s why Docker has to pull the base image again before building your application image.
+
+### 2. Ensuring Latest Updates
+- If the base image is updated, pulling ensures that your container is built with the latest version.
+- For example, if you're using node:18-alpine, and the upstream image updates security patches, your build will include those updates.
+
+### 3. Dockerfile FROM Instruction
+- The FROM instruction in your Dockerfile specifies the base image (e.g., FROM ubuntu:latest).
+- If the base image isn't present locally, Docker will automatically pull it from Docker Hub or another registry.
+
+### 4. Optimized Caching (If Enabled)
+If you use GitHub Actions caching (like docker build --cache-from), you might not need to pull the base image every time.
+
 Therefore I have write the github workflow file like below.
 
 ## How to Start
